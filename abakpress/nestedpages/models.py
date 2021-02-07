@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Page(models.Model):
     url = models.CharField(_('URL'), max_length=100)
-    parent_url = models.CharField(_('Parrent URL'),  max_length=100, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
     name = models.CharField(_('name'), max_length=100, db_index=True)
     head = models.CharField(_('head'), max_length=200)
     content = models.TextField(_('content'), blank=True)

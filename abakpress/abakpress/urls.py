@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from nestedpages.views import StaticPageView
+from nestedpages.views import (
+    StaticPageView, CreateStaticPageView, EditStaticPageView
+)
 
 urlpatterns = [
+    re_path(r'^(?P<url>.*)add$', CreateStaticPageView.as_view(), name='create_page'),
+    re_path(r'^(?P<url>.*/)edit$', EditStaticPageView.as_view(), name='edit_page'),
     re_path(r'^(?P<url>.*)$', StaticPageView.as_view(), name='page'),
-    path('admin/', admin.site.urls),
 ]
