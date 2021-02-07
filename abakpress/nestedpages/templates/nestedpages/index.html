@@ -9,13 +9,16 @@
         <h1> {{head}} </h1>
     </div>
     <div class=row>
+        {% autoescape off %}
         <p>{{ content }}</p>
+        {% endautoescape %}
     </div>
-    <div class=row>
-        <a href="{{ own_url }}">{{ name }}</a>
-        {% for child in children %}
-        <p style="margin-left: 40px"><a href="{{ child.get_absolute_url }}">{{ child.name }}</a></p>
-        {% endfor %}
+    <div>
+        <ul>
+            {%for root in relatives.items %} 
+                {%include "nestedpages/tree_view_template.html" %}
+            {%endfor%}
+        </ul>
     </div>
 </div>
 

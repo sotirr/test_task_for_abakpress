@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'test_task',
         'USER': 'django_user',
         'PASSWORD': 'django_password',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

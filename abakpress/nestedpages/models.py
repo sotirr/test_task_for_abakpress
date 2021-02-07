@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -15,3 +17,15 @@ class Page(models.Model):
 
     def get_absolute_url(self):
         return reverse('page', kwargs={'url': self.url})
+
+    def convert_to_html(self, site_name):
+        regex_bold = r'\*\*(.+?)\*\*'
+        regex_italic = r'\\\\(.+?)\\\\'
+        regex_link = r'\(\((.+?) (.+?)\)\)'
+        replace_bold = r'<b>\1</b>'
+        replace_italic = r'<i>\1</i>'
+        replace_link = r'<a href="http://' + site_name + r'/\1">\2</a>'
+        replaced_bold = re.sub(regex_bold, replace_bold, self.content)
+        replaced_italic = re.sub(regex_italic, replace_italic, replaced_bold)
+        replaced_link = re.sub(regex_link, replace_link, replaced_italic)
+        return replaced_link

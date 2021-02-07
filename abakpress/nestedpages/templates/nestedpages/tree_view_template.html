@@ -1,0 +1,11 @@
+<li><a href="{{ root.0.get_absolute_url }}">{{root.0.name}}</a>
+    {% if root.1 %}
+        <ul>
+         {%for child in root.1.items %}
+              {%with root=child template_name="nestedpages/tree_view_template.html" %}
+                   {%include template_name%}
+              {%endwith%}
+         {%endfor%}
+         </ul>
+    {%endif%}
+</li>
