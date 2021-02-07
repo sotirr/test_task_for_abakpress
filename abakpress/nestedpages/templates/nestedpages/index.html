@@ -1,0 +1,26 @@
+
+{% extends 'base.html' %}
+
+{% block title %} {{name}} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="mx-auto w-50 p-5">
+        <h1> {{head}} </h1>
+    </div>
+    <div class=row>
+        {% autoescape off %}
+        <p>{{ content }}</p>
+        {% endautoescape %}
+    </div>
+    <div>
+        <ul>
+            {%for root in relatives.items %} 
+                {%include "nestedpages/tree_view_template.html" %}
+            {%endfor%}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
+
