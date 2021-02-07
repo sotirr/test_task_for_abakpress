@@ -1,5 +1,3 @@
-import re
-
 from django.views import View
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -10,14 +8,17 @@ from .forms import CreatePageForm, EditPageForm
 
 
 class StaticPageView(View):
+    ''' main page view '''
 
     def get(self, request: HttpRequest, url: str) -> HttpResponse:
+        ''' renders base view of page'''
         site: str = request.get_host()
         page_data: QuerySet = get_object_or_404(Page, url=url)
         context: dict = self.generate_data_for_page(url, page_data, site)
         return render(request, 'nestedpages/index.html', context=context)
 
     def generate_data_for_page(self, url: str, page_data: QuerySet, site: str) -> dict:
+        ''' prepares context to rendering page '''
         children: QuerySet = Page.objects.all().filter(parent=page_data)
         tree = {}
         relatives = self.dfs(tree, page_data)
@@ -32,30 +33,27 @@ class StaticPageView(View):
         return context
 
     def dfs(self, tree, root):
-        tree[root] = {child: {} for child in Page.objects.all().filter(parent=root)}
+        ''' creates a graph to build a tree of links '''
+        tree[root] = {
+            child: {} for child in Page.objects.all().filter(parent=root)
+        }
         for child in tree[root]:
             self.dfs(tree[root], child)
         return tree
 
-    def convert_to_html(self, site):
-        regex_bold = r'\*\*(.+?)\*\*'
-        regex_italic = r'\\\\(.+?)\\\\'
-        regex_link = r'\(\((.+?) (.+?)\)\)'
-        replace_bold = r'<b>\1</b>'
-        replace_italic = r'<i>\1</i>'
-        replace_link = r'<a href="http://localhost/\1">\2</a>'
-        replaced_bold = re.sub(regex_bold, replace_bold, self.content)
-        replaced_italic = re.sub(regex_italic, replace_italic, replaced_bold)
-        replaced_link = re.sub(regex_link, replace_link, replaced_italic)
-        return replaced_link
-
 
 class CreateStaticPageView(View):
+    ''' create new page '''
+
     def get(self, request: HttpRequest, url: str) -> HttpResponse:
+        ''' renders page with creating form '''
         form = CreatePageForm
-        return render(request, 'nestedpages/create_page.html', context={'form': form})
+        return render(
+            request, 'nestedpages/create_page.html', context={'form': form}
+        )
 
     def post(self, request: HttpRequest, url: str) -> HttpResponse:
+        ''' creates new page into db '''
         full_url: str = url + request.POST['name'] + '/'
         parent = Page.objects.filter(url=url).first()
         bound_form = CreatePageForm(request.POST)
@@ -70,12 +68,18 @@ class CreateStaticPageView(View):
 
 
 class EditStaticPageView(View):
+    ''' edit exist page '''
+
     def get(self, request: HttpRequest, url: str) -> HttpResponse:
+        ''' renders page with filling form '''
         instance: QuerySet = Page.objects.get(url=url)
         form = EditPageForm(instance=instance)
-        return render(request, 'nestedpages/create_page.html', context={'form': form})
+        return render(
+            request, 'nestedpages/create_page.html', context={'form': form}
+        )
 
     def post(self, request: HttpRequest, url: str) -> HttpResponse:
+        ''' saves edited forms into bd'''
         instance: QuerySet = Page.objects.get(url=url)
         bound_form = EditPageForm(request.POST, instance=instance)
         if bound_form.is_valid():

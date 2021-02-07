@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Page(models.Model):
+    ''' model for storing pages '''
+
     url = models.CharField(_('URL'), max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
     name = models.CharField(_('name'), max_length=100, db_index=True)
@@ -16,9 +18,11 @@ class Page(models.Model):
         return self.name
 
     def get_absolute_url(self):
+        ''' returns url for page'''
         return reverse('page', kwargs={'url': self.url})
 
     def convert_to_html(self, site_name):
+        ''' converts special symbols to html '''
         regex_bold = r'\*\*(.+?)\*\*'
         regex_italic = r'\\\\(.+?)\\\\'
         regex_link = r'\(\((.+?) (.+?)\)\)'
