@@ -76,4 +76,4 @@
 
 Упрощена схема базы:
 
-![bd_scheme](https://user-images.githubusercontent.com/47517203/107148954-d32e8c80-6977-11eb-9016-e18a3d52a4ff.png)
+![bd_scheme](https://user-images.githubusercontent.com/47517203/107149060-6ff12a00-6978-11eb-92df-49a14aad60e7.png)
